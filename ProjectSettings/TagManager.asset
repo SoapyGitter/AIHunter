@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Item
+  - CameraHandler
+  - MinigamePosition
+  - MinigameEnvironment
+  - GlobalLight
+  - ExitOrb
+  - Challenge
+  - BugMelee
+  - GameOver
+  - PlayerGFX
+  - VideoPlayer
+  - Taker
+  - ParticleController
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Environment
+  - Water
+  - UI
+  - Item
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Background
+    uniqueID: 591702077
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Minigame
+    uniqueID: 527649997
+    locked: 0
