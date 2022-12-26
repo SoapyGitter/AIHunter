@@ -20,8 +20,8 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         gameSettings.TimeController = GameObject.FindGameObjectWithTag(TagEnum.GameController).GetComponent<TimeController>();
-        gameSettings.Movement = Utils<Movement>.GetComponentByTag(TagEnum.Player);
-         videoPlayer = GameObject.FindGameObjectWithTag(TagEnum.VideoPlayer);
+        gameSettings.Movement = GameObject.FindGameObjectWithTag(TagEnum.Player).GetComponent<Movement>();
+        videoPlayer = GameObject.FindGameObjectWithTag(TagEnum.VideoPlayer);
         if(videoPlayer != null)
         {
             gameSettings.VideoPlayer = videoPlayer.GetComponent<VideoPlayer>();

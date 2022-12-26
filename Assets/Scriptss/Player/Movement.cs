@@ -1,10 +1,6 @@
-using Assets.Scripts;
-using Assets.Scripts.Models.Player;
 using Assets.Scripts.Player.Models;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
+using Assets.Scriptss.Models.Animations.AnimationsEnum.Player;
+using Assets.Scriptss.Models.Particles.ParticlesEnums;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -25,6 +21,11 @@ public class Movement : MonoBehaviour
 
     void Awake()
     {
+        InitComponents();
+    }
+
+    private void InitComponents()
+    {
         rb = this.gameObject.GetComponent<Rigidbody2D>();
         timeController = GameObject.FindGameObjectWithTag(TagEnum.GameController).GetComponent<TimeController>();
         gameController = GameObject.FindGameObjectWithTag(TagEnum.GameController).GetComponent<GameController>();
@@ -32,66 +33,46 @@ public class Movement : MonoBehaviour
         player.GFX = GameObject.FindGameObjectWithTag(TagEnum.PlayerGFX);
         animator = player.GFX.GetComponent<Animator>();
         audioSource = this.gameObject.GetComponent<AudioSource>();
-
-        InitParticles();
     }
 
-    private void InitParticles()
-    {
-        player.ParticlesSettings.DustParticle = particlesController.GetParticle("Dust");
-
-    }
     private void FixedUpdate()
     {
         HandleInputs();
+
+        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+            HandleMovementAnimations();
+        else
+            HandleIdleAnimations();
     }
 
     void Update()
     {
         player.GroundChecker.IsGrounded = Physics2D.OverlapCircle(player.GroundChecker.Point.position, player.GroundChecker.Radius, player.GroundChecker.LayerMask);
-        HandleJump();
+
+        HandleJumping();
+    }
+
+    #region Logic Handlers
+    private void HandleJumping()
+    {
         if (!player.GroundChecker.IsGrounded)
             HandleAir();
         else
+        {
+            HadleGroundedAnimations();
             HandleGround();
-    }
+        }
 
-    void HandleAir()
-    {
-        rb.drag = player.RigidBodySettings.AirDrag;
-        rb.gravityScale = player.RigidBodySettings.AirGravityScale;
-    }
-
-    void HandleGround()
-    {
-        animator.ResetTrigger("Jump");
-        rb.drag = player.RigidBodySettings.GroundDrag;
-        rb.gravityScale = player.RigidBodySettings.AirGravityScale;
-
-    }
-    void HandleMovementAnimations()
-    {
-
-        if (player.GroundChecker.IsGrounded)
-            particlesController.PlayParticle("Dust", 60 * -player.MovingDirection);
-        else
-            particlesController.StopParticle("Dust");
-
-        animator.SetBool("IsMoving", true);
-        if (!audioSource.isPlaying)
-            audioSource.PlayOneShot(walk);
-    }
-
-    void HandleIdleAnimations()
-    {
-        particlesController.StopParticle("Dust");
-        animator.SetBool("IsMoving", false);
-        audioSource.Stop();
+        if (Input.GetKeyDown(KeyCode.Space) && player.GroundChecker.IsGrounded)
+        {
+            HandleJumpAnimations();
+            rb.AddForce(Vector2.up * player.JumpForce, ForceMode2D.Impulse);
+            player.GroundChecker.IsGrounded = false;
+        }
     }
 
     void HandleInputs()
     {
-        
         if (Input.GetKey(KeyCode.D))
         {
             player.MovingDirection = 1;
@@ -102,25 +83,58 @@ public class Movement : MonoBehaviour
             player.MovingDirection = -1;
             rb.AddForce(-this.transform.right * player.Speed);
         }
+    }
 
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
-            HandleMovementAnimations();
-        else
-            HandleIdleAnimations();
-    }
-    private void HandleJump()
+    void HandleAir()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (player.GroundChecker.IsGrounded)
-            {
-                audioSource.PlayOneShot(jump);
-                animator.SetTrigger("Jump");
-                rb.AddForce(Vector2.up * player.JumpForce, ForceMode2D.Impulse);
-                player.GroundChecker.IsGrounded = false;
-            }
-        }
+        rb.drag = player.RigidBodySettings.AirDrag;
+        rb.gravityScale = player.RigidBodySettings.AirGravityScale;
     }
+
+    void HandleGround()
+    {
+        rb.drag = player.RigidBodySettings.GroundDrag;
+        rb.gravityScale = player.RigidBodySettings.AirGravityScale;
+
+    }
+
+    #endregion
+
+    #region Animation Handlers
+    void HandleMovementAnimations()
+    {
+
+        if (player.GroundChecker.IsGrounded)
+            particlesController.PlayParticle(ParticlesEnum.PlayerDustMoving.ToStringFast());
+        else
+            particlesController.StopParticle(ParticlesEnum.PlayerDustMoving.ToStringFast());
+
+        animator.SetBool(PlayerAnimationsEnum.IsMoving.ToStringFast(), true);
+        if (!audioSource.isPlaying)
+            audioSource.PlayOneShot(walk);
+    }
+
+    void HandleIdleAnimations()
+    {
+        particlesController.StopParticle(ParticlesEnum.PlayerDustMoving.ToStringFast());
+        animator.SetBool(PlayerAnimationsEnum.IsMoving.ToStringFast(), false);
+        audioSource.Stop();
+    }
+
+    void HandleJumpAnimations()
+    {
+        particlesController.PlayParticle(ParticlesEnum.PlayerDustJump.ToStringFast());
+        audioSource.PlayOneShot(jump);
+        animator.SetTrigger(PlayerAnimationsEnum.Jump.ToStringFast());
+    }
+
+    void HadleGroundedAnimations()
+    {
+        animator.ResetTrigger(PlayerAnimationsEnum.Jump.ToStringFast());
+
+    }
+
+    #endregion
 
     public void Death()
     {

@@ -38,11 +38,10 @@ public class Taker : MonoBehaviour
                 //Charging.
                 if (Input.GetMouseButton(0))
                 {
-                    //TODO: Fix CameraShake
-                    //StartCoroutine(taker.CameraShake.Shake((taker.MaxPower + 1 - taker.Power) / ShakePowerDivision, taker.Power / ShakePowerDivision));
                     if (taker.Power < taker.MaxPower)
                         taker.Power += Time.deltaTime;
                 }
+
                 //Charge Release.
                 else if (Input.GetMouseButtonUp(0))
                 {

@@ -2,6 +2,5 @@
 {
     public class ParticlesSettings
     {
-        public Particles.Particles DustParticle;
     }
 }

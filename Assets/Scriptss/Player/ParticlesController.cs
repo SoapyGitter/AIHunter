@@ -1,36 +1,44 @@
 using Assets.Scripts.Models.Particles;
-using System.Collections;
+using Assets.Scriptss.Models.Particles.ParticlesEnums;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class ParticlesController : MonoBehaviour
 {
 
-    public List<Particles> Particles = new List<Particles>();
+    public List<ParticlesFiller> ParticlesFiller = new();
+    private Dictionary<string, Particles> Particles = new Dictionary<string, Particles>();
 
 
+    private void Awake()
+    {
+        ParticlesFiller.ForEach(p =>
+        {
+            Particles.Add(p.Name.ToStringFast(), new Particles { Particle = p.Particle, ParticlePosition = p.ParticlePosition });
+        });
+    }
     public Particles GetParticle(string id)
     {
-        return Particles.Where(p => p.Id.ToLower() == id.ToLower()).FirstOrDefault();
+
+        return Particles[id];
     }
     public void PlayParticle(string id)
     {
-        var particle = Particles.Where(p => p.Id.ToLower() == id.ToLower()).FirstOrDefault().Particle;
+        var particle = Particles[id].Particle;
         if (particle != null)
             particle.Play();
     }
 
     public void StopParticle(string id)
     {
-        var particle = Particles.Where(p => p.Id.ToLower() == id.ToLower()).FirstOrDefault().Particle;
+        var particle = Particles[id].Particle;
         if (particle != null)
             particle.Stop();
     }
 
     public void PlayParticle(string id, int rotation)
     {
-        var particle = Particles.Where(p => p.Id.ToLower() == id.ToLower()).FirstOrDefault().Particle;
+        var particle = Particles[id].Particle;
         if (particle != null)
         {
             var shape = particle.shape;
@@ -39,8 +47,11 @@ public class ParticlesController : MonoBehaviour
         }
     }
 
+    public void RemoveParticle(string id) => Particles.Remove(id);
+
     private void Update()
     {
-        Particles.ForEach(p => p.Particle.transform.position = p.ParticlePosition.position);
+        foreach (var particle in Particles)
+            particle.Value.Particle.transform.position = particle.Value.ParticlePosition.position;
     }
 }

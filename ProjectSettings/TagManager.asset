@@ -17,6 +17,7 @@ TagManager:
   - VideoPlayer
   - Taker
   - ParticleController
+  - PostProcessingVolume
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - Water
   - UI
   - Item
-  - 
+  - PostProcessing
   - 
   - 
   - 

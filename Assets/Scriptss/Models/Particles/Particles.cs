@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scriptss.Models.Particles.ParticlesEnums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,16 @@ namespace Assets.Scripts.Models.Particles
 {
     [Serializable]
     public class Particles
+
     {
-        public string Id = "";
+        public ParticleSystem Particle;
+        public Transform ParticlePosition;
+    }
+
+    [Serializable]
+    public class ParticlesFiller
+    {
+        public ParticlesEnum Name;
         public ParticleSystem Particle;
         public Transform ParticlePosition;
     }
